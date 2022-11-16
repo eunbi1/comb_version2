@@ -40,8 +40,8 @@ for epoch in torch.arange(5,51,5):
 for epoch in torch.arange(4,5):
   path =f"/scratch/private/eunbiyoon/Levy_motion-/CelebAclamp3.0epoch{epoch}_1.9_0.1_7.5.pth"
   samples = sample(dir_path='/home/eunbiyoon/comb',alpha=1.8,
-                   path1='/home/eunbiyoon/comb/new100CIFAR10clamp20b0.5c0.51.8_0.1_20/ckpt/1CIFAR10clamp20epoch4_1.8_0.1_20.pth',
-                   path2 = '/home/eunbiyoon/comb/new100CIFAR10clamp20b0.5c0.51.8_0.1_20/ckpt/2CIFAR10clamp20epoch4_1.8_0.1_20.pth',
+                   path1='/home/eunbiyoon/comb/new100CIFAR10clamp20b0.5c0.51.8_0.1_20/ckpt/1CIFAR10clamp20epoch0_1.8_0.1_20.pth',
+                   path2 = '/home/eunbiyoon/comb/new100CIFAR10clamp20b0.5c0.51.8_0.1_20/ckpt/2CIFAR10clamp20epoch0_1.8_0.1_20.pth',
                    beta_min=0.1, beta_max=20, sampler='pc_sampler2', batch_size=64, num_steps=1000, LM_steps=50,
                    Predictor=True, Corrector=False, trajectory=False, clamp=20, initial_clamp=20, clamp_mode="constant",
                    datasets="CIFAR10", name=epoch.item(),b=0.5,c=0.5)

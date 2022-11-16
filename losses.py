@@ -26,20 +26,8 @@ def loss_fn(model1, model2, sde,
     sigma1, sigma2 = sde.marginal_std(t)
     x_coeff = sde.diffusion_coeff(t)
 
-    #levy1 = LevyGaussian(alpha=2,  sigma_1=sigma_1, sigma_2=sigma_2)
-    #levy2 = LevyGaussian(alpha=sde.alpha,  sigma_1=sigma_1, sigma_2=sigma_2)
-    # score1 = levy1.score(noise, 2, sigma1=sigma_1, sigma2=sigma_2)
-    # score2 = levy2.score(noise, alpha=sde.alpha, sigma1=sigma_1, sigma2=sigma_2)
-    #score = get_approx_score(noise, alpha, sigma_1,sigma_2)
-
     noise = (e_B * sigma1[:, None, None, None] + e_L * sigma2[:, None, None, None])*torch.pow(sigma2, -1)[:,None,None,None]
-    # print('noise', torch.max(noise), torch.min(noise))
-    S1=[]
-    # for i, sB, sL in zip(range(len(x0)), sigma1,sigma2):
-    #     n = noise[i]
-    #     levy1 = LevyGaussian(alpha=2, sigma_1=sB, sigma_2=sL)
-    #     score1 = levy1.score(n)
-    #     S1.append(score1)
+
     score1 = levy_gaussian_score(sde.alpha, noise, sigma1, sigma2, mode='score')
     score2 = levy_gaussian_score(sde.alpha, noise, sigma1, sigma2)
     x_t = x_coeff[:, None, None, None] * x0 + e_B*sigma1[:,None,None,None]+ e_L * sigma2[:, None, None, None]

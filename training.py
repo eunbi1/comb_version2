@@ -106,10 +106,10 @@ def train(alpha=2, lr = 1e-4, batch_size=128, beta_min=0.1, beta_max = 20,
             x = 2*x - 1
             x = x.to(device)
             n= x.size(0)
-            e_B = torch.clamp(torch.randn(size=x.shape), -3,3)
+            e_B = torch.randn(size=x.shape)
             e_L = torch.clamp(levy.sample(alpha, 0, size=x.shape ).to(device),-training_clamp,training_clamp)
 
-            t = torch.rand(n).to(device)*(1-1e-5)+1e-5
+            t = torch.rand(n).to(device)*(sde.T-1e-5)+1e-5
             # t = torch.randint(low=0, high=999, size=(n // 2 + 1,) ).to(device)
             # t = torch.cat([t, 999- t - 1], dim=0)[:n]
             # t = (t+1)/1000

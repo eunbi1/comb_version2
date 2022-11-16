@@ -44,14 +44,11 @@ def ddim_score_update2(score_model1, score_model2, sde, x_s, s, t, h=0.6, clamp 
     noise_coeff1 = sde.b*torch.pow(beta_step, 1/2)
     noise_coeff2 = sde.c*torch.pow(sde.alpha/2*beta_step, 1 / sde.alpha)
 
-    e_B = torch.clamp(torch.randn(size =x_s.shape).to(device),-3,3)
+    e_B = torch.randn(size =x_s.shape).to(device)
     e_L = torch.clamp(levy.sample(sde.alpha, 0, size=x_s.shape ).to(device),-clamp,clamp)
 
     x_t = x_coeff[:, None, None, None] * x_s + score_coeff1[:, None, None, None]* score_s1+score_coeff2[:,None,None,None]* score_s2 + noise_coeff1[:,None,None,None]*e_B + noise_coeff2[:,None,None,None]*e_L
-    #print('score_coee', torch.min(score_coeff), torch.max(score_coeff))
-    #print('noise_coeff',torch.min(noise_coeff), torch.max(noise_coeff))
-    #print('x_coeff', torch.min(x_coeff), torch.max(x_coeff))
-    
+
     print('x_s range', torch.min(x_s), torch.max(x_s))
     print('x_t range', torch.min(x_t), torch.max(x_t))
     print('x_s mean', torch.mean(x_s))
@@ -87,7 +84,7 @@ def pc_sampler2(score_model1, score_model2,
         x_s = sigma2[:,None,None,None]*torch.clamp(e_L,-initial_clamp,initial_clamp)+sigma1[:,None,None,None]*e_B
     elif datasets =="CIFAR10":
         sigma1, sigma2 = sde.marginal_std(t)
-        e_B = torch.clamp(torch.randn((batch_size, 3, 32, 32)).to(device),-3,3)
+        e_B = torch.randn((batch_size, 3, 32, 32)).to(device)
         e_L = levy.sample(alpha, 0, (batch_size, 3, 32,32)).to(device)
         x_s = sigma2[:,None,None,None]*torch.clamp(e_L,-initial_clamp,initial_clamp)+sigma1[:,None,None,None]*e_B
 
@@ -101,7 +98,7 @@ def pc_sampler2(score_model1, score_model2,
     if trajectory:
         samples = []
         samples.append(x_s)
-    time_steps = torch.linspace(1., 1e-5, num_steps)
+    time_steps = torch.linspace(sde.T, 1e-5, num_steps)
     step_size = time_steps[0] - time_steps[1]
 
     batch_time_step_s = torch.ones(x_s.shape[0]) * time_steps[0]
@@ -191,7 +188,7 @@ def ode_sampler(score_model1, score_model2,
         e_L = levy.sample(alpha, 0, (batch_size, 1, 28,28)).to(device)
         x_s = sigma2[:,None,None,None]*torch.clamp(e_L,-initial_clamp,initial_clamp)+sigma1[:,None,None,None]*e_B
     elif datasets == "CIFAR10":
-        e_B = torch.clamp(torch.randn((batch_size, 3, 32, 32)).to(device),-3,3)
+        e_B = torch.randn((batch_size, 3, 32, 32)).to(device)
         e_L = levy.sample(alpha, 0, (batch_size, 3, 32, 32)).to(device)
         x_s = sigma2[:,None,None,None]*torch.clamp(e_L,-initial_clamp,initial_clamp)+sigma1[:,None,None,None]*e_B
 
@@ -204,7 +201,7 @@ def ode_sampler(score_model1, score_model2,
     if trajectory:
         samples = []
         samples.append(x_s)
-    time_steps = torch.linspace(1., eps, num_steps)
+    time_steps = torch.linspace(sde.T, eps, num_steps)
     step_size = time_steps[0] - time_steps[1]
 
     batch_time_step_s = torch.ones(x_s.shape[0]) * time_steps[0]
