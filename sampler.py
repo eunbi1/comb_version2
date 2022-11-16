@@ -76,7 +76,7 @@ def pc_sampler2(score_model1, score_model2,
                 clamp = 10,
                 initial_clamp =3, final_clamp = 1,
                 datasets="MNIST", clamp_mode = 'constant'):
-    t = torch.ones(batch_size, device=device)
+    t = torch.ones(batch_size, device=device)*sde.T
     if datasets =="MNIST":
         sigma1 , sigma2 = sde.marginal_std(t)
         e_B= torch.randn((batch_size, 1, 28,28)).to(device)
