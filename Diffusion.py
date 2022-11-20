@@ -32,7 +32,7 @@ class VPSDE:
             if self.schedule == 'linear':
                 beta = (self.beta_1 - self.beta_0) * t + self.beta_0
             elif self.schedule == 'cosine':
-                beta = math.pi / 2 * self.alpha / (self.cosine_s + 1) * torch.tan(
+                beta = math.pi / 2 *2 / (self.cosine_s + 1) * torch.tan(
                     (t + self.cosine_s) / (1 + self.cosine_s) * math.pi / 2)
             beta = torch.clamp(beta, 0, 20)
             return beta
